@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveAboutRequest;
 use App\Http\Resources\SettingsResource;
+use App\Http\Requests\SaveContactRequest;
 
 class SettingsController extends Controller
 {
@@ -42,7 +43,7 @@ class SettingsController extends Controller
         if ($request->file('hero_image')) {
 
             //delete previous image if any
-            $this->settings->deleteImage();
+            $this->settings->deleteImage('hero_image');
 
             $imageName = (new UploadFile)
                 ->setFile($request->file('hero_image'))
@@ -65,7 +66,7 @@ class SettingsController extends Controller
         if ($request->file('about_image')) {
 
             //delete previous image if any
-            $this->settings->deleteImage();
+            $this->settings->deleteImage('about_image');
 
             $imageName = (new UploadFile)
                 ->setFile($request->file('about_image'))
@@ -73,6 +74,27 @@ class SettingsController extends Controller
                 ->execute();
 
             $data['about_image'] = $imageName;
+        }
+
+        $this->save($data);
+        return back();
+    }
+
+    public function saveContact(SaveContactRequest $request)
+    {
+        $data = $request->only(['address', 'phone', 'email', 'google_map_url']);
+
+        if ($request->file('contact_image')) {
+
+            //delete previous image if any
+            $this->settings->deleteImage('contact_image');
+
+            $imageName = (new UploadFile)
+                ->setFile($request->file('contact_image'))
+                ->setUploadPath($this->settings->uploadFolder())
+                ->execute();
+
+            $data['contact_image'] = $imageName;
         }
 
         $this->save($data);

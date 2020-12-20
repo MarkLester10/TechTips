@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CategoriesController;
 
 
 Route::get('/', function () {
@@ -14,4 +15,6 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified']], fu
     Route::get('/settings', [SettingsController::class, 'create'])->name('settings.create');
     Route::post('/settings/save-hero', [SettingsController::class, 'saveHero'])->name('settings.save-hero');
     Route::post('/settings/save-about', [SettingsController::class, 'saveAbout'])->name('settings.save-about');
+    Route::post('/settings/save-contact', [SettingsController::class, 'saveContact'])->name('settings.save-contact');
+    Route::resource('categories', CategoriesController::class);
 });

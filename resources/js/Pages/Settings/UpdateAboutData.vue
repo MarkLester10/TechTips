@@ -1,5 +1,5 @@
 <template>
-    <jet-form-section @submitted="updateHeroInformation">
+    <jet-form-section @submitted="updateAboutInformation">
         <template #title>
             About Us Information
         </template>
@@ -105,7 +105,7 @@ export default {
     },
 
     methods: {
-        updateHeroInformation() {
+        updateAboutInformation() {
             this.form.post(route("settings.save-about"), {
                 preserveScroll: true
             });

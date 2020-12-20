@@ -11,6 +11,8 @@
                 <UpdateHeroData :settings="settings" />
                 <jet-section-border />
                 <UpdateAboutData :settings="settings" />
+                <jet-section-border />
+                <UpdateContactData :settings="settings" />
             </div>
         </div>
     </app-layout>
@@ -21,6 +23,7 @@ import AppLayout from "@/Layouts/AppLayout";
 import UpdateAboutData from "./UpdateAboutData.vue";
 import UpdateHeroData from "./UpdateHeroData.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
+import UpdateContactData from "./UpdateContactData.vue";
 
 export default {
     props: ["settings"],
@@ -29,7 +32,8 @@ export default {
         AppLayout,
         UpdateHeroData,
         JetSectionBorder,
-        UpdateAboutData
+        UpdateAboutData,
+        UpdateContactData
     }
 };
 </script>

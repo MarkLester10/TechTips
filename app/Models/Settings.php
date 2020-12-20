@@ -18,6 +18,8 @@ class Settings extends Model
         'data' => 'array',
     ];
 
+    //Hero Information
+
     public function heroDescription(): ?string
     {
         return Arr::get($this->data, 'hero_description'); //will return null or with the value
@@ -29,24 +31,19 @@ class Settings extends Model
     }
 
 
-    public function heroImageUrl(): ?string
-    {
-        return $this->imageUrl('hero_image');
-    }
-
     public function uploadFolder()
     {
-        return "public/settings";
+        return "settings";
     }
 
-    public function deleteImage()
+    public function deleteImage(string $column): void
     {
-        $imageName = $this->imageUrl('hero_image');
-        if ($imageName !== null) {
+        $imagePath = $this->imageUrl($column);
+        if ($imagePath !== null) {
+            $imageName = Arr::get($this->data, $column);
             Storage::delete("{$this->uploadFolder()}/{$imageName}");
         }
     }
-
 
     //About Information
 
@@ -60,12 +57,27 @@ class Settings extends Model
         return Arr::get($this->data, 'about_title'); //will return null or with the value
     }
 
+    //Contact Information
 
-    public function aboutImageUrl(): ?string
+    public function address(): ?string
     {
-        return $this->imageUrl('about_image');
+        return Arr::get($this->data, 'address');
     }
 
+    public function email(): ?string
+    {
+        return Arr::get($this->data, 'email');
+    }
+
+    public function phone(): ?string
+    {
+        return Arr::get($this->data, 'phone');
+    }
+
+    public function googleMapUrl(): ?string
+    {
+        return Arr::get($this->data, 'google_map_url');
+    }
 
     public function imageUrl(string $column): ?string
     {
