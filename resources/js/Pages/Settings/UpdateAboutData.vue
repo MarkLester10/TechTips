@@ -30,7 +30,7 @@
                     id="about_title"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.hero_title"
+                    v-model="form.about_title"
                     autocomplete="about_title"
                 />
                 <jet-input-error
@@ -42,13 +42,7 @@
             <!-- Description -->
             <div class="col-span-6 sm:col-span-6">
                 <jet-label for="about_description" value="About Description" />
-                <AppTextarea
-                    id="about_description"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.about_description"
-                    autocomplete="about_description"
-                />
+                <AppCKEditor v-model="form.about_description" />
                 <jet-input-error
                     :message="form.error('about_description')"
                     class="mt-2"
@@ -78,8 +72,8 @@ import JetInput from "@/Jetstream/Input";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import JetActionMessage from "@/Jetstream/ActionMessage";
-import AppTextarea from "@/Components/Textarea";
 import AppImage from "@/Components/Image";
+import AppCKEditor from "@/Components/CKEditor";
 
 export default {
     components: {
@@ -89,8 +83,8 @@ export default {
         JetInput,
         JetInputError,
         JetLabel,
-        AppTextarea,
-        AppImage
+        AppImage,
+        AppCKEditor
     },
 
     props: ["settings"],

@@ -18,8 +18,8 @@
 
 <script>
 import AppLayout from "@/Layouts/AppLayout";
-import UpdateHeroData from "./UpdateHeroData.vue";
 import UpdateAboutData from "./UpdateAboutData.vue";
+import UpdateHeroData from "./UpdateHeroData.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 
 export default {
@@ -27,8 +27,8 @@ export default {
 
     components: {
         AppLayout,
-        JetSectionBorder,
         UpdateHeroData,
+        JetSectionBorder,
         UpdateAboutData
     }
 };

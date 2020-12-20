@@ -18,8 +18,8 @@
                 <AppImage
                     :image-url="settings.data.hero_image_url"
                     label="Photo"
-                    :error-message="form.error('hero_img')"
-                    v-model="form.hero_img"
+                    :error-message="form.error('hero_image')"
+                    v-model="form.hero_image"
                 />
             </div>
 
@@ -100,7 +100,7 @@ export default {
             form: this.$inertia.form(
                 {
                     hero_description: this.settings.data.hero_description,
-                    hero_img: null,
+                    hero_image: null,
                     hero_title: this.settings.data.hero_title
                 },
                 {

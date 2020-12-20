@@ -18,6 +18,9 @@ class SettingsResource extends JsonResource
             'hero_description' => $this->heroDescription(),
             'hero_image_url' => $this->heroImageUrl(),
             'hero_title' => $this->heroTitle(),
+            'about_description' => $this->aboutDescription(),
+            'about_image_url' => $this->aboutImageUrl(),
+            'about_title' => $this->aboutTitle(),
         ];
     }
 }
