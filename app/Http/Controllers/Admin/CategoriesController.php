@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use Inertia\Inertia;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
-use App\Models\Category;
 
 class CategoriesController extends Controller
 {
@@ -29,7 +30,7 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Categories/Create');
     }
 
     /**
@@ -40,7 +41,13 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', Rule::unique(Category::class)]
+        ]);
+
+        Category::create($data);
+        return redirect()->route('categories.index')->with('success', 'Category created successfully');
     }
 
     /**
@@ -80,11 +87,12 @@ class CategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return back()->with('success', 'Category Deleted Successfully');
     }
 }

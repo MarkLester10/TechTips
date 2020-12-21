@@ -254,6 +254,12 @@
                     >
                         Dashboard
                     </jet-responsive-nav-link>
+                    <jet-responsive-nav-link
+                        :href="route('categories.index')"
+                        :active="route().current('categories.index')"
+                    >
+                        Categories
+                    </jet-responsive-nav-link>
                 </div>
 
                 <!-- Responsive Settings Options -->
@@ -283,6 +289,13 @@
                             :active="route().current('profile.show')"
                         >
                             Profile
+                        </jet-responsive-nav-link>
+
+                        <jet-responsive-nav-link
+                            :href="route('settings.create')"
+                            :active="route().current('settings.create')"
+                        >
+                            Settings
                         </jet-responsive-nav-link>
 
                         <jet-responsive-nav-link
@@ -377,6 +390,7 @@
 
         <!-- Page Content -->
         <main>
+            <FlashMessage />
             <slot></slot>
         </main>
 
@@ -391,6 +405,7 @@ import JetDropdown from "@/Jetstream/Dropdown";
 import JetDropdownLink from "@/Jetstream/DropdownLink";
 import JetNavLink from "@/Jetstream/NavLink";
 import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink";
+import FlashMessage from "@/Components/FlashMessage";
 
 export default {
     components: {
@@ -398,7 +413,8 @@ export default {
         JetDropdown,
         JetDropdownLink,
         JetNavLink,
-        JetResponsiveNavLink
+        JetResponsiveNavLink,
+        FlashMessage
     },
 
     data() {
