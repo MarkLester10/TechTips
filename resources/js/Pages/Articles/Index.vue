@@ -27,44 +27,44 @@
             <div
                 class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
             >
-                <AppTable :headers="headers" :items="categories">
-                    <tr v-for="category in categories.data" :key="category.id">
+                <AppTable :headers="headers" :items="articles">
+                    <tr v-for="article in articles.data" :key="article.id">
                         <td
                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                         >
-                            {{ category.name }}
+                            {{ article.title }}
                         </td>
                         <td
                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                         >
-                            {{ category.slug }}
+                            {{ article.category.name }}
                         </td>
                         <td
                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                         >
-                            {{ category.created_at_for_human }}
+                            {{ article.created_at_for_human }}
                         </td>
                         <td
                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                         >
-                            {{ category.modified_at_for_human }}
+                            {{ article.modified_at_for_human }}
                         </td>
                         <td
                             class="px-6 py-4 flex items-center justify-end space-x-6 text-sm font-medium"
                         >
                             <EditButton
                                 :url="
-                                    route('categories.edit', {
-                                        category: category.id
+                                    route('articles.edit', {
+                                        article: article.id
                                     })
                                 "
                             />
 
                             <DeleteButton
-                                module-name="category"
+                                module-name="article"
                                 :url="
-                                    route('categories.destroy', {
-                                        category: category.id
+                                    route('articles.destroy', {
+                                        article: article.id
                                     })
                                 "
                             />
@@ -87,7 +87,7 @@ import JetButton from "@/Jetstream/Button";
 
 export default {
     props: {
-        categories: {}
+        articles: {}
     },
     components: {
         AppLayout,
@@ -102,11 +102,11 @@ export default {
         headers() {
             return [
                 {
-                    name: "Name",
+                    name: "Title",
                     class: "font-bold text-gray-900"
                 },
                 {
-                    name: "Slug",
+                    name: "Category",
                     class: "font-bold text-gray-900"
                 },
                 {
@@ -126,7 +126,7 @@ export default {
         breadcrumbs() {
             return [
                 {
-                    label: "Categories",
+                    label: "Articles",
                     url: route("categories.index")
                 }
             ];

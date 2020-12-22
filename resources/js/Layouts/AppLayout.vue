@@ -30,6 +30,12 @@
                             >
                                 Categories
                             </jet-nav-link>
+                            <jet-nav-link
+                                :href="route('articles.index')"
+                                :active="route().current('articles.index')"
+                            >
+                                Aricles
+                            </jet-nav-link>
                         </div>
                     </div>
 
@@ -259,6 +265,12 @@
                         :active="route().current('categories.index')"
                     >
                         Categories
+                    </jet-responsive-nav-link>
+                    <jet-responsive-nav-link
+                        :href="route('articles.index')"
+                        :active="route().current('articles.index')"
+                    >
+                        Articles
                     </jet-responsive-nav-link>
                 </div>
 

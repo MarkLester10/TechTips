@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class ArticleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +16,8 @@ class CategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'title' => $this->title,
+            'category' => new CategoryResource($this->whenLoaded('category')), //will only available to a view from where it is called
             'slug' => $this->when($this->slug, $this->slug),
             // This will be available when it is called or plucked or when it is present in the model
             'created_at_for_human' => $this->when($this->created_at, function () {

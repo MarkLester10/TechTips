@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //To let Laravel Sessions available to Vue Components and can be access  by using $page.flash.{key}
         Inertia::share('flash', function () {
             return [
                 'success' => Session::get('success'),

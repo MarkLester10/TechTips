@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use Inertia\Inertia;
+use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ArticleResource;
 
-class CategoriesController extends Controller
+class ArticlesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +19,9 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Categories/Index', [
-            'categories' => CategoryResource::collection(Category::latest()->simplePaginate(10))
+        $articles = Article::with('category:id,name')->latest()->simplePaginate(10);
+        return Inertia::render('Articles/Index', [
+            'articles' => ArticleResource::collection($articles)
         ]);
     }
 
@@ -74,7 +76,7 @@ class CategoriesController extends Controller
     {
         return Inertia::render('Categories/Create', [
             'edit' => true,
-            'category' => new CategoryResource($category),
+            'category' => new ArticleResource($category),
         ]);
     }
 
@@ -99,12 +101,13 @@ class CategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Category  $category
+     * @param  Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Article $article)
     {
-        $category->delete();
-        return back()->with('success', 'Category Deleted Successfully');
+        //TODO: Implement image delete
+        $article->delete();
+        return back()->with('success', 'Article Deleted Successfully');
     }
 }
