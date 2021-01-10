@@ -6,7 +6,7 @@
 
         <AppContainer ct-width="max-w-7xl">
             <jet-button
-                :href="route('categories.create')"
+                :href="route('articles.create')"
                 class="mb-6 ml-4 sm:ml-0 bg-green-400 hover:bg-green-500 active:bg-green-400 focus:outline-none focus:border-green-400"
                 >Add New
                 <svg
@@ -127,7 +127,7 @@ export default {
             return [
                 {
                     label: "Articles",
-                    url: route("categories.index")
+                    url: route("articles.index")
                 }
             ];
         }

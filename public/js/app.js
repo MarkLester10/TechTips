@@ -4053,8 +4053,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Jetstream_Label__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/Jetstream/Label */ "./resources/js/Jetstream/Label.vue");
 /* harmony import */ var _Jetstream_ActionMessage__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/Jetstream/ActionMessage */ "./resources/js/Jetstream/ActionMessage.vue");
 /* harmony import */ var _Components_Container__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/Components/Container */ "./resources/js/Components/Container.vue");
-/* harmony import */ var _Components_BreadCrumbs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/Components/BreadCrumbs */ "./resources/js/Components/BreadCrumbs.vue");
-/* harmony import */ var _helpers_slugify_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/helpers/slugify.js */ "./resources/js/helpers/slugify.js");
+/* harmony import */ var _Components_CKEditor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/Components/CKEditor */ "./resources/js/Components/CKEditor.vue");
+/* harmony import */ var _Components_BreadCrumbs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/Components/BreadCrumbs */ "./resources/js/Components/BreadCrumbs.vue");
+/* harmony import */ var _helpers_slugify_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/helpers/slugify.js */ "./resources/js/helpers/slugify.js");
+/* harmony import */ var _Components_Image__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/Components/Image */ "./resources/js/Components/Image.vue");
 //
 //
 //
@@ -4131,6 +4133,52 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 
@@ -4148,48 +4196,68 @@ __webpack_require__.r(__webpack_exports__);
     JetLabel: _Jetstream_Label__WEBPACK_IMPORTED_MODULE_4__["default"],
     JetActionMessage: _Jetstream_ActionMessage__WEBPACK_IMPORTED_MODULE_5__["default"],
     AppContainer: _Components_Container__WEBPACK_IMPORTED_MODULE_6__["default"],
-    BreadCrumbs: _Components_BreadCrumbs__WEBPACK_IMPORTED_MODULE_7__["default"],
-    JetInputError: _Jetstream_InputError__WEBPACK_IMPORTED_MODULE_3__["default"]
+    BreadCrumbs: _Components_BreadCrumbs__WEBPACK_IMPORTED_MODULE_8__["default"],
+    JetInputError: _Jetstream_InputError__WEBPACK_IMPORTED_MODULE_3__["default"],
+    AppImage: _Components_Image__WEBPACK_IMPORTED_MODULE_10__["default"],
+    AppCkEditor: _Components_CKEditor__WEBPACK_IMPORTED_MODULE_7__["default"]
   },
   props: {
     edit: Boolean,
-    category: Object
+    article: Object,
+    categories: {
+      type: Object,
+      "default": function _default() {
+        return {
+          data: []
+        };
+      }
+    }
   },
   data: function data() {
     return {
+      imageUrl: "",
       form: this.$inertia.form({
-        name: "",
-        slug: ""
+        _method: this.edit ? "PUT" : "",
+        category_id: "",
+        title: "",
+        slug: "",
+        description: this.edit ? this.article.data.description : "",
+        image: ""
+      }, {
+        resetOnSuccess: false
       })
     };
   },
   methods: {
-    saveCategory: function saveCategory() {
-      this.edit ? this.form.put(route("categories.update", {
-        id: this.category.data.id
-      })) : this.form.post(route("categories.store"));
+    saveArticle: function saveArticle() {
+      this.edit ? this.form.post(route("articles.update", {
+        id: this.article.data.id
+      })) : this.form.post(route("articles.store"));
     }
   },
   computed: {
     breadcrumbs: function breadcrumbs() {
       return [{
-        label: "Categories",
-        url: route("categories.index")
+        label: "Articles",
+        url: route("articles.index")
       }, {
-        label: this.edit ? "Edit Category" : "Add Category"
+        label: this.edit ? "Edit Article" : "Add Article"
       }];
     }
   },
   watch: {
-    "form.name": function formName(name) {
-      this.form.slug = Object(_helpers_slugify_js__WEBPACK_IMPORTED_MODULE_8__["strSlug"])(name);
+    "form.title": function formTitle(title) {
+      this.form.slug = Object(_helpers_slugify_js__WEBPACK_IMPORTED_MODULE_9__["strSlug"])(title);
     }
   },
   mounted: function mounted() {
     if (this.edit) {
-      this.form.name = this.category.data.name;
-      this.form.slug = this.category.data.slug;
+      this.form.category_id = this.article.data.category_id;
+      this.form.title = this.article.data.title;
+      this.form.slug = this.article.data.slug;
     }
+
+    this.imageUrl = this.article.data.image_url;
   }
 });
 
@@ -4331,7 +4399,7 @@ __webpack_require__.r(__webpack_exports__);
     breadcrumbs: function breadcrumbs() {
       return [{
         label: "Articles",
-        url: route("categories.index")
+        url: route("articles.index")
       }];
     }
   }
@@ -49649,7 +49717,7 @@ var render = function() {
     },
     [
       _vm._v(" "),
-      _c("AppContainer", { attrs: { "ct-width": "max-w-2xl" } }, [
+      _c("AppContainer", { attrs: { "ct-width": "max-w-4xl" } }, [
         _c(
           "div",
           {
@@ -49663,31 +49731,54 @@ var render = function() {
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
-                    return _vm.saveCategory($event)
+                    return _vm.saveArticle($event)
                   }
                 }
               },
               [
+                _c("AppImage", {
+                  staticClass: "mt-2",
+                  attrs: {
+                    "image-url": _vm.imageUrl,
+                    label: "Image",
+                    "error-message": _vm.form.error("image")
+                  },
+                  model: {
+                    value: _vm.form.image,
+                    callback: function($$v) {
+                      _vm.$set(_vm.form, "image", $$v)
+                    },
+                    expression: "form.image"
+                  }
+                }),
+                _vm._v(" "),
                 _c(
                   "div",
+                  { staticClass: "mt-4" },
                   [
-                    _c("jet-label", { attrs: { for: "name", value: "Name" } }),
+                    _c("jet-label", {
+                      attrs: { for: "title", value: "Title" }
+                    }),
                     _vm._v(" "),
                     _c("jet-input", {
                       staticClass: "mt-1 block w-full",
-                      attrs: { id: "name", type: "text", autocomplete: "name" },
+                      attrs: {
+                        id: "title",
+                        type: "text",
+                        autocomplete: "title"
+                      },
                       model: {
-                        value: _vm.form.name,
+                        value: _vm.form.title,
                         callback: function($$v) {
-                          _vm.$set(_vm.form, "name", $$v)
+                          _vm.$set(_vm.form, "title", $$v)
                         },
-                        expression: "form.name"
+                        expression: "form.title"
                       }
                     }),
                     _vm._v(" "),
                     _c("jet-input-error", {
                       staticClass: "mt-2",
-                      attrs: { message: _vm.form.error("name") }
+                      attrs: { message: _vm.form.error("title") }
                     })
                   ],
                   1
@@ -49714,6 +49805,100 @@ var render = function() {
                     _c("jet-input-error", {
                       staticClass: "mt-2",
                       attrs: { message: _vm.form.error("slug") }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "mt-4" },
+                  [
+                    _c("jet-label", {
+                      attrs: { for: "category", value: "Category" }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.category_id,
+                            expression: "form.category_id"
+                          }
+                        ],
+                        staticClass: "block w-full form-input",
+                        attrs: { name: "category", id: "category" },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.form,
+                              "category_id",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "" } }, [
+                          _vm._v("Select")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.categories.data, function(category) {
+                          return _c(
+                            "option",
+                            {
+                              key: category.id,
+                              domProps: { value: category.id }
+                            },
+                            [_vm._v(_vm._s(category.name))]
+                          )
+                        })
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c("jet-input-error", {
+                      staticClass: "mt-2",
+                      attrs: { message: _vm.form.error("category_id") }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "mt-4" },
+                  [
+                    _c("jet-label", {
+                      attrs: { for: "description", value: "Description" }
+                    }),
+                    _vm._v(" "),
+                    _c("AppCkEditor", {
+                      model: {
+                        value: _vm.form.description,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "description", $$v)
+                        },
+                        expression: "form.description"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("jet-input-error", {
+                      staticClass: "mt-2",
+                      attrs: { message: _vm.form.error("description") }
                     })
                   ],
                   1
@@ -49758,7 +49943,7 @@ var render = function() {
                       {
                         staticClass:
                           "font-semibold text-xs uppercase tracking-widest text-gray-900 bg-transparent px-4 py-3 rounded-md hover:bg-gray-200",
-                        attrs: { href: _vm.route("categories.index") }
+                        attrs: { href: _vm.route("articles.index") }
                       },
                       [
                         _vm._v(
@@ -49769,7 +49954,8 @@ var render = function() {
                   ],
                   1
                 )
-              ]
+              ],
+              1
             )
           ]
         )
@@ -49824,7 +50010,7 @@ var render = function() {
             {
               staticClass:
                 "mb-6 ml-4 sm:ml-0 bg-green-400 hover:bg-green-500 active:bg-green-400 focus:outline-none focus:border-green-400",
-              attrs: { href: _vm.route("categories.create") }
+              attrs: { href: _vm.route("articles.create") }
             },
             [
               _vm._v("Add New\n            "),

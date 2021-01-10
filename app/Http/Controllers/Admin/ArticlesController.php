@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\UploadFile;
 use Inertia\Inertia;
 use App\Models\Article;
 use App\Models\Category;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
+use App\Http\Resources\CategoryResource;
 
 class ArticlesController extends Controller
 {
@@ -32,9 +34,10 @@ class ArticlesController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Categories/Create', [
+        return Inertia::render('Articles/Create', [
             'edit' => false,
-            'category' => (object)[]
+            'article' => new ArticleResource(new Article()),
+            'categories' => CategoryResource::collection(Category::select('id', 'name')->get())
         ]);
     }
 
@@ -44,15 +47,22 @@ class ArticlesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, UploadFile $uploadFile)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', Rule::unique(Category::class)]
+            'category_id' => ['required', Rule::exists(Category::class, 'id')],
+            'title' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', Rule::unique(Article::class)],
+            'image' => ['required', 'image', 'max:3000'],
+            'description' => ['required', 'string']
         ]);
 
-        Category::create($data);
-        return redirect()->route('categories.index')->with('success', 'Category created successfully');
+        $data['image'] = $uploadFile->setFile($request->file('image'))
+            ->setUploadPath((new Article())->uploadFolder())
+            ->execute();
+
+        Article::create($data);
+        return redirect()->route('articles.index')->with('success', 'Article created successfully');
     }
 
     /**
@@ -72,11 +82,12 @@ class ArticlesController extends Controller
      * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function edit(Article $article)
     {
-        return Inertia::render('Categories/Create', [
+        return Inertia::render('Articles/Create', [
             'edit' => true,
-            'category' => new ArticleResource($category),
+            'article' => new ArticleResource($article),
+            'categories' => CategoryResource::collection(Category::select('id', 'name')->get())
         ]);
     }
 
@@ -87,15 +98,30 @@ class ArticlesController extends Controller
      * @param  Category $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Article $article, UploadFile $uploadFile)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', Rule::unique(Category::class)->ignore($category)]
+            'category_id' => ['required', Rule::exists(Category::class, 'id')],
+            'title' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', Rule::unique(Article::class)->ignore($article->id)],
+            'image' => ['nullable', 'image', 'max:3000'],
+            'description' => ['required', 'string']
+        ], [
+            'category_id.required' => 'Article Category is required'
         ]);
 
-        $category->update($data);
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully');
+        $data['image'] = $article->image;
+        if ($request->file('image')) {
+            //delete previous image if any
+            $article->deleteImage();
+
+            $data['image'] = $uploadFile->setFile($request->file('image'))
+                ->setUploadPath($article->uploadFolder())
+                ->execute();
+        }
+
+        $article->update($data);
+        return redirect()->route('articles.index')->with('success', 'Article updated successfully');
     }
 
     /**
@@ -106,7 +132,7 @@ class ArticlesController extends Controller
      */
     public function destroy(Article $article)
     {
-        //TODO: Implement image delete
+        $article->deleteImage();
         $article->delete();
         return back()->with('success', 'Article Deleted Successfully');
     }

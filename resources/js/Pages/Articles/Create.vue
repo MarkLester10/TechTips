@@ -4,23 +4,32 @@
             <BreadCrumbs :items="breadcrumbs" />
         </template>
 
-        <AppContainer ct-width="max-w-2xl">
+        <AppContainer ct-width="max-w-4xl">
             <div
                 class="px-4 py-6 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
             >
-                <form @submit.prevent="saveCategory">
-                    <!-- Name -->
-                    <div>
-                        <jet-label for="name" value="Name" />
+                <form @submit.prevent="saveArticle">
+                    <!-- Image -->
+                    <AppImage
+                        class="mt-2"
+                        v-model="form.image"
+                        :image-url="imageUrl"
+                        label="Image"
+                        :error-message="form.error('image')"
+                    />
+
+                    <!-- Title -->
+                    <div class="mt-4">
+                        <jet-label for="title" value="Title" />
                         <jet-input
-                            id="name"
+                            id="title"
                             type="text"
                             class="mt-1 block w-full"
-                            v-model="form.name"
-                            autocomplete="name"
+                            v-model="form.title"
+                            autocomplete="title"
                         />
                         <jet-input-error
-                            :message="form.error('name')"
+                            :message="form.error('title')"
                             class="mt-2"
                         />
                     </div>
@@ -37,6 +46,41 @@
                         />
                         <jet-input-error
                             :message="form.error('slug')"
+                            class="mt-2"
+                        />
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="mt-4">
+                        <jet-label for="category" value="Category" />
+
+                        <select
+                            name="category"
+                            id="category"
+                            class="block w-full form-input"
+                            v-model="form.category_id"
+                        >
+                            <option value="">Select</option>
+                            <option
+                                v-for="category in categories.data"
+                                :key="category.id"
+                                :value="category.id"
+                                >{{ category.name }}</option
+                            >
+                        </select>
+                        <jet-input-error
+                            :message="form.error('category_id')"
+                            class="mt-2"
+                        />
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mt-4">
+                        <jet-label for="description" value="Description" />
+                        <AppCkEditor v-model="form.description" />
+
+                        <jet-input-error
+                            :message="form.error('description')"
                             class="mt-2"
                         />
                     </div>
@@ -63,7 +107,7 @@
 
                         <a
                             class="font-semibold text-xs uppercase tracking-widest text-gray-900 bg-transparent px-4 py-3 rounded-md hover:bg-gray-200"
-                            :href="route('categories.index')"
+                            :href="route('articles.index')"
                         >
                             Cancel
                         </a>
@@ -82,8 +126,10 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import JetActionMessage from "@/Jetstream/ActionMessage";
 import AppContainer from "@/Components/Container";
+import AppCkEditor from "@/Components/CKEditor";
 import BreadCrumbs from "@/Components/BreadCrumbs";
 import { strSlug } from "@/helpers/slugify.js";
+import AppImage from "@/Components/Image";
 
 export default {
     components: {
@@ -94,52 +140,74 @@ export default {
         JetActionMessage,
         AppContainer,
         BreadCrumbs,
-        JetInputError
+        JetInputError,
+        AppImage,
+        AppCkEditor
     },
     props: {
         edit: Boolean,
-        category: Object
+        article: Object,
+        categories: {
+            type: Object,
+            default: function() {
+                return {
+                    data: []
+                };
+            }
+        }
     },
     data() {
         return {
-            form: this.$inertia.form({
-                name: "",
-                slug: ""
-            })
+            imageUrl: "",
+            form: this.$inertia.form(
+                {
+                    _method: this.edit ? "PUT" : "",
+                    category_id: "",
+                    title: "",
+                    slug: "",
+                    description: this.edit ? this.article.data.description : "",
+                    image: ""
+                },
+                {
+                    resetOnSuccess: false
+                }
+            )
         };
     },
     methods: {
-        saveCategory() {
+        saveArticle() {
             this.edit
-                ? this.form.put(
-                      route("categories.update", { id: this.category.data.id })
+                ? this.form.post(
+                      route("articles.update", { id: this.article.data.id })
                   )
-                : this.form.post(route("categories.store"));
+                : this.form.post(route("articles.store"));
         }
     },
     computed: {
         breadcrumbs() {
             return [
                 {
-                    label: "Categories",
-                    url: route("categories.index")
+                    label: "Articles",
+                    url: route("articles.index")
                 },
                 {
-                    label: this.edit ? "Edit Category" : "Add Category"
+                    label: this.edit ? "Edit Article" : "Add Article"
                 }
             ];
         }
     },
     watch: {
-        "form.name"(name) {
-            this.form.slug = strSlug(name);
+        "form.title"(title) {
+            this.form.slug = strSlug(title);
         }
     },
     mounted() {
         if (this.edit) {
-            this.form.name = this.category.data.name;
-            this.form.slug = this.category.data.slug;
+            this.form.category_id = this.article.data.category_id;
+            this.form.title = this.article.data.title;
+            this.form.slug = this.article.data.slug;
         }
+        this.imageUrl = this.article.data.image_url;
     }
 };
 </script>

@@ -38,9 +38,10 @@ class Settings extends Model
 
     public function deleteImage(string $column): void
     {
-        $imagePath = $this->imageUrl($column);
-        if ($imagePath !== null) {
-            $imageName = Arr::get($this->data, $column);
+        // $imagePath = $this->imageUrl($column);
+        $imageName = Arr::get($this->data, $column);
+        if ($imageName !== null) {
+            // $imageName = Arr::get($this->data, $column);
             Storage::delete("{$this->uploadFolder()}/{$imageName}");
         }
     }
